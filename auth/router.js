@@ -17,7 +17,7 @@ const createAuthToken = function(user) {
 
 const localAuth = passport.authenticate('local', {session: false});
 
-router.use(bodyParser.json());
+router.use(bodyParser.urlencoded());
 
 router.get('/login', (req, res) => {
   res.render('login');
@@ -26,8 +26,13 @@ router.get('/login', (req, res) => {
 router.post('/login', localAuth, (req, res) => {
   const authToken = createAuthToken(req.user.apiRepr());
   res.json({authToken});
-  res.redirect('/profile');
+  // res.redirect('/api/auth/profile' + {authToken});
 });
+
+router.get('/profile', (req, res) => {
+  res.render('profile');
+});
+
 
 const jwtAuth = passport.authenticate('jwt', {session: false});
 

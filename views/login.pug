@@ -19,7 +19,7 @@ html(lang="en")
       div.logo-large
         //- img.logo(src='/public/images/wax-seal-logo.png', alt='wax seal logo')
 
-      form#sign-up(method='POST' enctype='application/json' action="/login")
+      form#sign-up(method='POST' enctype='application/json' action="/api/auth/login")
         div
           input#username(type='text', name='username', required='', placeholder=' ')
           label(for='username') Username
