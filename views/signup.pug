@@ -1,0 +1,49 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset='utf-8')
+    title Whiskey Social Signup
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    link(rel='stylesheet', href='../public/css/reset.css')
+    link(rel='stylesheet', href='../public/css/grid.css')
+    link(rel='stylesheet', href='../public/css/main.css')
+  body
+    //- header
+    //-   nav.menu
+    //-     ul.menu-list
+    //-       li
+    //-         img.logo(src='../public/images/wax-seal-logo.png', alt='wax seal logo')
+    //-       li.header-text-sign-up Whiskey Social
+
+    div.main-content-wrapper
+      div.logo-large
+        //- img.logo(src='../public/images/wax-seal-logo.png', alt='wax seal logo')
+
+      form#sign-up(method='POST' enctype='application/json' action='/signup')
+        //- div
+        //-   input#firstName(type='text', name='firstName', required='', placeholder=' ')
+        //-   label(for='firstName') First Name
+        //- div
+        //-   input#lastName(type='text', name='lastName', required='', placeholder=' ')
+        //-   label(for='lastName') Last Name
+        div
+          input#username(type='text', name='username', required='', placeholder=' ')
+          label(for='username') Username
+        //- div
+        //-   input#email(type='email', name='email', required='', placeholder=' ')
+        //-   label(for='email') Email Address
+        //-   .requirements
+        //-     | Must be a valid email address.
+        div
+          input#password(type='password', name='password', required='', placeholder=' ', pattern='(?=.*[a-z]).{10,}')
+          label(for='password') Password
+          .requirements
+            | Your password must be at least 10 characters with at least one letter - case Sensitive.
+        input(type='submit', value='Sign Up')
+
+    //- - if (messages.info)
+    //-   .message.info
+    //-     span= messages.info
+
+    //- footer.main-footer
+    //-   | Whiskey Social 2017 Copyright

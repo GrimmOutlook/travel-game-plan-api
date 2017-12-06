@@ -1,0 +1,35 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset='utf-8')
+    title Whiskey Social Login
+    meta(name="viewport", content="width=device-width, initial-scale=1")
+    link(rel='stylesheet', href='/public/css/reset.css')
+    link(rel='stylesheet', href='/public/css/grid.css')
+    link(rel='stylesheet', href='/public/css/main.css')
+  body
+    //- header
+    //-   nav.menu
+    //-     ul.menu-list
+    //-       li
+    //-         img.logo(src='/public/images/wax-seal-logo.png', alt='wax seal logo')
+    //-       li.header-text-sign-up Whiskey Social
+
+    div.main-content-wrapper
+      div.logo-large
+        //- img.logo(src='/public/images/wax-seal-logo.png', alt='wax seal logo')
+
+      form#sign-up(method='POST' enctype='application/json' action="/login")
+        div
+          input#username(type='text', name='username', required='', placeholder=' ')
+          label(for='username') Username
+        div
+          input#password(type='password', name='password', required='', placeholder=' ', pattern='(?=.*[a-z]).{10,}')
+          label(for='password') Password
+
+        input.login-button(type='submit', value='Log In')
+
+      div.login-bottom
+        p
+          | New around here?
+          a(href='/signup')   Sign up!
