@@ -33,7 +33,6 @@ router.get('/profile', (req, res) => {
   res.render('profile');
 });
 
-
 const jwtAuth = passport.authenticate('jwt', {session: false});
 
 // The user exchanges a valid JWT for a new one with a later expiration
