@@ -25,7 +25,7 @@ router.get('/login', (req, res) => {
 // The user provides a username and password to login
 router.post('/login', localAuth, (req, res) => {
   const authToken = createAuthToken(req.user.apiRepr());
-  res.json({authToken});
+  res.json({"token": authToken});
   // res.redirect('/api/auth/profile' + {authToken});
 });
 

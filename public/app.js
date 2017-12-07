@@ -1,5 +1,3 @@
-const {authToken} = require('../auth/router');
-
 //Upon clicking the login button on login form:
 // - send an AJAX request to the server for the authToken & "Bearer" method
 
@@ -12,18 +10,68 @@ const {authToken} = require('../auth/router');
 //        Do I need a jQuery event handler on every single button in my app?
 
 
-
-function setHeader(authToken){
-  const authHeader = XMLHttpRequest.setRequestHeader('Bearer', authToken);
-  $.ajax(authHeader);
-}
-
-
 $(document).ready(function(){
-  $('.login-button').click(function(e){
-   e.preventDefault();
-    setHeader(authToken);
-    console.log("The login button was just clicked");
-  });
-})
 
+  $('#sign-up').submit(e => {
+    e.preventDefault();
+    const username = $('#username').val();
+    const password = $('#password').val();
+      $.ajax({
+        method: "POST",
+        url: "http://localhost:8080/api/auth/login",
+        data: { username: username, password: password }
+      })
+      .done(function( msg ) {
+          console.log("msg: ", msg);
+          console.log("msg.token: ", msg.token);
+          localStorage.setItem('token', msg.token);
+          window.location="http://localhost:8080/api/auth/profile/";
+      });
+  });
+
+})
+// If you go back to the login screen after closing the tab, the token is still in localStorage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// function setHeader(authToken){
+//   const authHeader = XMLHttpRequest.setRequestHeader('Bearer', authToken);
+//   $.ajax(authHeader);
+// }
+
+
+// $(document).ready(function(){
+//   $('.login-button').click(function(e){
+//    e.preventDefault();
+//     setHeader(authToken);
+//     console.log("The login button was just clicked");
+//   });
+// })
+
+// Use fetch() with this? :
+// const httpHeader = { 'Content-Type' : 'application/json', 'Bearer' : token };
+// const tokenHeader = new Headers(httpHeader);
+
+
+// localStorage.getItem('Bearer', authToken);
+// localStorage.setItem('Bearer', authToken);

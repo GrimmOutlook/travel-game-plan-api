@@ -7,7 +7,7 @@ const {User} = require('./models');
 const router = express.Router();
 
 const jsonParser = bodyParser.urlencoded();   // works in browser, not Postman
-// const jsonParser = bodyParser.json();  works in Postman, not browser
+// const jsonParser = bodyParser.json();      // works in Postman, not browser
 
 router.get('/', (req, res) => {
   res.render('signup');
