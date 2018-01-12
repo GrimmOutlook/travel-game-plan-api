@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const passport = require('passport');
 
 const {router: usersRouter} = require('./users');
+const {router: tripsRouter} = require('./trips');
 const {router: authRouter, localStrategy, jwtStrategy} = require('./auth');  //why not require('.auth/index.js')?
 
 mongoose.Promise = global.Promise;
@@ -41,6 +42,7 @@ passport.use(jwtStrategy);
 
 app.use('/api/users/', usersRouter);  // signup
 app.use('/api/auth/', authRouter);    // login
+app.use('/trip', tripsRouter);
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 

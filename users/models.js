@@ -1,21 +1,18 @@
 'use strict';
 const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 mongoose.Promise = global.Promise;
 
-const UserSchema = mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-    unique: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  firstName: {type: String, default: ''},
-  lastName: {type: String, default: ''}
+const UserSchema = Schema({
+  username: {type: String, trim: true},   // required: true, unique: true???
+  password: String,    // required: true??
+  firstName: {type: String, default: '', trim: true},
+  lastName: {type: String, default: '', trim: true},
+  trip: [{
+    type: Schema.Types.ObjectId, ref: 'Trip'
+  }]
 });
 
 UserSchema.methods.apiRepr = function() {

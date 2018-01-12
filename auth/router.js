@@ -8,8 +8,8 @@ const { User } = require('../users/models');
 
 const config = require('../config');
 const router = express.Router();
-const jsonParser = bodyParser.urlencoded({ extended: true });  // works in browser, not Postman
-// const jsonParser = bodyParser.json();          // works in Postman, not browser
+// const jsonParser = bodyParser.urlencoded({ extended: true });  // works in browser, not Postman
+const jsonParser = bodyParser.json();          // works in Postman, not browser
 
 const createAuthToken = function(user) {
   return jwt.sign({user}, config.JWT_SECRET, {
@@ -32,24 +32,7 @@ router.post('/login', localAuth, (req, res) => {
   const authToken = createAuthToken(req.user.apiRepr());
   console.log("authToken in post /login: ", authToken);
   res.json({"token": authToken});
-  // res.redirect('/api/auth/profile' + {authToken});
-});
-
-router.get('/profile', jsonParser, (req, res) => {
-  console.log('req.body', req.body);
-  console.log('req.user.username', req.user.username);
-  User
-    .findOne({username: req.user.username})
-    .then(user => {
-      console.log("user: ", user);
-      res.render('profile', user.apiRepr());
-    })
-    .catch(
-      err => {
-        console.error(err);
-        res.status(500).json({message: 'Something\'s wrong with the Profile page.'});
-    });
-
+  // res.redirect('/api/auth/dashboard' + {authToken});
 });
 
 // The user exchanges a valid JWT for a new one with a later expiration
