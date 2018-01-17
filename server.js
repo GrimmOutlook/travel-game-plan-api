@@ -1,15 +1,17 @@
 'use strict';
 require('dotenv').config();
 const path   = require('path');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const passport = require('passport');
 
+// const jsonParser = bodyParser.json();
+
 const {router: usersRouter} = require('./users');
 const {router: tripsRouter} = require('./trips');
-const {router: authRouter, localStrategy, jwtStrategy} = require('./auth');  //why not require('.auth/index.js')?
+const {router: authRouter, localStrategy, jwtStrategy} = require('./auth');
 
 mongoose.Promise = global.Promise;
 
@@ -19,6 +21,8 @@ const app = express();
 
 // Logging
 app.use(morgan('common'));
+// app.use(jsonParser); // get information from html forms  // works in Postman, not browser
+// app.use(bodyParser.urlencoded({ extended: true }));  // works in browser, not Postman
 
 // Pug views
 app.use('/public', express.static(path.join(__dirname, 'public')));
@@ -42,13 +46,13 @@ passport.use(jwtStrategy);
 
 app.use('/api/users/', usersRouter);  // signup
 app.use('/api/auth/', authRouter);    // login
-app.use('/trip', tripsRouter);
+app.use('/trip/', tripsRouter);
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 // A protected endpoint which needs a valid JWT to access it
 app.get('/api/protected', jwtAuth, (req, res) => {
-      console.log('req.user is: ' + req.user);
+      console.log('req.user is: ', req.user);
       console.log('Does this work?');
         return res.json({
             data: 'rosebud'

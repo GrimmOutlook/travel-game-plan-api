@@ -1,17 +1,21 @@
 'use strict';
 const express = require('express');
 const bodyParser = require('body-parser');
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
+const config = require('../config');
 
+const {jwtStrategy} = require('../auth');
 const {User} = require('./models');
 
 const router = express.Router();
 
-const jsonParser = bodyParser.urlencoded({ extended: true });   // works in browser, not Postman
-// const jsonParser = bodyParser.json();      // works in Postman, not browser
+// const jsonParser = bodyParser.urlencoded({ extended: true });   // works in browser, not Postman
+const jsonParser = bodyParser.json();      // works in Postman, not browser
 
-router.get('/', (req, res) => {
-  res.render('signup');
-});
+// router.get('/', (req, res) => {
+//   res.render('signup');
+// });
 
 // Post to register a new user
 router.post('/', jsonParser, (req, res) => {
@@ -133,18 +137,30 @@ router.post('/', jsonParser, (req, res) => {
     });
 });
 
-// Never expose all your users like below in a prod application
-// we're just doing this so we have a quick way to see
-// if we're creating users. keep in mind, you can also
-// verify this in the Mongo shell.
+passport.use(jwtStrategy);
+const jwtAuth = passport.authenticate('jwt', { session: false });
 
-router.get('/me', (req, res) => {
+router.get('/me', jwtAuth, (req, res) => {
   // find how the username gets here
+  console.log("endpoint /me");
+  console.log('req.body: ', req.body);
+  console.log('req.user: ', req.user);
+  console.log(`req.user.username: ${req.user.username}`);
   User
     .findOne({username: req.user.username})
     .populate('trip')
     .exec()
     .then(user => res.json(user))
+    .catch(err => res.status(500).json({message: 'Internal server error'}));
+});
+
+router.get('/', (req, res) => {
+  console.log("Why doesnt req.body work?");
+  console.log('req.body: ', req.body);
+  console.log(`req.user: ${req.user}`);
+  // console.log(`req.user.username: ${req.user.username}`);
+  return User.find()
+    .then(users => res.json(users.map(user => user)))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 

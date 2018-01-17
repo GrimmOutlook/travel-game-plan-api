@@ -8,8 +8,6 @@ const { User } = require('../users/models');
 
 const config = require('../config');
 const router = express.Router();
-// const jsonParser = bodyParser.urlencoded({ extended: true });  // works in browser, not Postman
-const jsonParser = bodyParser.json();          // works in Postman, not browser
 
 const createAuthToken = function(user) {
   return jwt.sign({user}, config.JWT_SECRET, {
@@ -21,8 +19,7 @@ const createAuthToken = function(user) {
 
 const localAuth = passport.authenticate('local', {session: false});
 const jwtAuth = passport.authenticate('jwt', { session: false });
-
-router.use(jsonParser);
+router.use(bodyParser.json());
 
 router.get('/login', (req, res) => {
   res.render('login');
@@ -30,6 +27,7 @@ router.get('/login', (req, res) => {
 // The user provides a username and password to login
 router.post('/login', localAuth, (req, res) => {
   const authToken = createAuthToken(req.user.apiRepr());
+  console.log('Why doesnt this ever fucking print out???????????????????????????????????????????????');
   console.log("authToken in post /login: ", authToken);
   res.json({"token": authToken});
   // res.redirect('/api/auth/dashboard' + {authToken});
