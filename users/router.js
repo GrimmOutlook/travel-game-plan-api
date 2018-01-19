@@ -140,6 +140,9 @@ router.post('/', jsonParser, (req, res) => {
 passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
+
+//  Use this for endpoint for retrieving all trips for a given user:
+
 router.get('/me', jwtAuth, (req, res) => {
   // find how the username gets here
   console.log("endpoint /me");
@@ -153,6 +156,8 @@ router.get('/me', jwtAuth, (req, res) => {
     .then(user => res.json(user))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
+
+//  GETs all users - not something we want:
 
 router.get('/', (req, res) => {
   console.log("Why doesnt req.body work?");
