@@ -42,15 +42,19 @@ router.get('/:tripId', jwtAuth, (req, res) => {
   console.log(`req.user.username: ${req.user.username}`);
   console.log('req.params.tripId: ' + req.params.tripId);
 
-  const singleTripUUID = req.params.tripId;
+  const singleTripId = req.params.tripId;
 
   User
     .findOne({username: req.user.username})
-    .populate({path: 'trip', $match: {tripUUID: singleTripUUID}})
+    .populate({path: 'trip', $match: {_id: singleTripId}})
     .exec()
     .then(user => {
-      let trip = user.trip.find(trip => trip.tripUUID === singleTripUUID);
-      if (trip){
+      console.log(`user: ${user}`);
+      let trip = user.trip.find(trip => trip._id == singleTripId);
+       if (!trip){
+        res.status(403).json({message: 'That trip does not exist!'});
+      }
+      else if (trip){
         res.json(trip);
       }
       else {
@@ -106,60 +110,94 @@ router.delete('/:tripId', jsonParser, jwtAuth, (req, res) => {
   console.log(`req.user.username: ${req.user.username}`);
   console.log('req.params.tripId: ' + req.params.tripId);
 
-  const singleTripUUID = req.params.tripId;
+  const singleTripId = req.params.tripId;
   const tripDeleteByUser = req.user.username;
 
-  // Trip.findOneAndRemove({tripUUID: singleTripUUID}).then(res.status(200).json({message: 'You have successfully deleted this trip!'});)
+  // Trip.findOneAndRemove({tripId: singleTripId}).then(res.status(200).json({message: 'You have successfully deleted this trip!'});)
 
   Trip
-    .find({tripUUID: singleTripUUID})
+    .findOne({_id: singleTripId})  //always returns an array of objects with just find()
     .populate('users')
     .exec()
     .then(trip => {
       console.log(`trip: ${trip}`);
       console.log(`trip.tripName before if: ${trip.tripName}`);
-      console.log(`trip[0].tripName before if: ${trip[0].tripName}`);
       if (!trip){
         res.status(403).json({message: 'That trip does not exist!'});
       }
       else if (trip){
-        console.log(`trip[0].users[0].username in else if: ${trip[0].users[0].username}`);
-        let user = trip[0].users.find(user => user.username === tripDeleteByUser);
+        console.log(`trip[0].users[0].username in else if: ${trip.users.username}`);
+        let user = trip.users.find(user => user.username === tripDeleteByUser);
         console.log(`user: ${user}`);
           if (!user){
             res.status(403).json({message: 'You are not authorized to delete this trip!'});
           }
           else {
-            console.log(`trip[0] before empty object: ${trip[0]}`);
-            trip[0] = {};
-            console.log('trip[0] after empty object: ', trip[0]);
-            res.status(200).json({message: 'You have successfully deleted this trip!'});
+            console.log(`trip before empty object: ${trip}`);
+            return trip.remove();
+            console.log('trip after empty object: ', trip);
           }
       }
     })
     .then(trip => {
       console.log(`trip at the bottom: ${trip}`)
-      trip.save()
+      res.status(200).json({message: 'You have successfully deleted this trip!'});
     })
-
+    .catch(
+      err => {
+        console.error(err);
+        res.status(500).json({message: 'Something\'s wrong with the trip post route.'});
+    });
 })
 
 //  Edit an Existing Trip:
 
 router.put('/:tripId', jsonParser, jwtAuth, (req,res) => {
 
-  const singleTripUUID = req.params.tripId;
+  const singleTripId = req.params.tripId;
+
+  const someObject = Object.assign({}, req.body)
 
   Trip
-    .findOneAndUpdate({tripUUID: singleTripUUID})
-    .then(trip => {
-      console.log('trip to update: ', trip);
-      trip.tripName = req.body.tripName || trip.tripName;
-      trip.dateStart = req.body.dateStart || trip.dateStart;
-      trip.dateEnd = req.body.dateEnd || trip.dateEnd;
-      trip.address = req.body.address || trip.address;
-      trip.tripDetails = req.body.tripDetails || trip.tripDetails;
-    })
+    .findOneAndUpdate({_id: singleTripId}, someObject, {new: true})
+    .then(trip => res.json(trip))
+    .catch(
+      err => {
+        console.error(err);
+        res.status(500).json({message: 'Something\'s wrong with the trip post route.'});
+    });
+})
+
+//  Creating an Existing item:
+
+router.post('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
+
+  const singleTripId = req.params.tripId;
+  const singleItemId = req.params.itemId;
+
+  const someObject = Object.assign({}, req.body)
+
+  Trip
+    .findOneAndUpdate({_id: singleTripId}, {$push: {items: someObject}}, {new: true})
+    .then(trip => res.json(trip))
+    .catch(
+      err => {
+        console.error(err);
+        res.status(500).json({message: 'Something\'s wrong with the trip post route.'});
+    });
+})
+
+//  Editing an Existing item:
+
+router.put('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
+
+  const singleTripId = req.params.tripId;
+  const singleItemId = req.params.itemId;
+
+  const someObject = Object.assign({}, req.body)
+
+  Trip
+    .findOneAndUpdate({_id: singleTripId}, {$push: {items: someObject}}, {new: true})
     .then(trip => res.json(trip))
     .catch(
       err => {
