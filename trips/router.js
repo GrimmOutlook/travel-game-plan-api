@@ -121,21 +121,18 @@ router.delete('/:tripId', jsonParser, jwtAuth, (req, res) => {
     .exec()
     .then(trip => {
       console.log(`trip: ${trip}`);
-      console.log(`trip.tripName before if: ${trip.tripName}`);
       if (!trip){
         res.status(403).json({message: 'That trip does not exist!'});
       }
       else if (trip){
-        console.log(`trip[0].users[0].username in else if: ${trip.users.username}`);
         let user = trip.users.find(user => user.username === tripDeleteByUser);
         console.log(`user: ${user}`);
+
           if (!user){
             res.status(403).json({message: 'You are not authorized to delete this trip!'});
           }
           else {
-            console.log(`trip before empty object: ${trip}`);
             return trip.remove();
-            console.log('trip after empty object: ', trip);
           }
       }
     })
@@ -168,6 +165,10 @@ router.put('/:tripId', jsonParser, jwtAuth, (req,res) => {
     });
 })
 
+//Do we need these 2 gets?  or just get it from GET trip?
+      //  GET a list of items for a particular trip:
+      //  GET an Existing item:
+
 //  Creating an Existing item:
 
 router.post('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
@@ -176,14 +177,18 @@ router.post('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
   const singleItemId = req.params.itemId;
 
   const someObject = Object.assign({}, req.body)
+  console.log("someObject in POST: ", someObject);
 
   Trip
     .findOneAndUpdate({_id: singleTripId}, {$push: {items: someObject}}, {new: true})
-    .then(trip => res.json(trip))
+    .then(trip => {
+      console.log(`trip: ${trip}`);
+      res.json(trip)
+    })
     .catch(
       err => {
         console.error(err);
-        res.status(500).json({message: 'Something\'s wrong with the trip post route.'});
+        res.status(500).json({message: 'Something\'s wrong with the item POST route.'});
     });
 })
 
@@ -193,16 +198,31 @@ router.put('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
 
   const singleTripId = req.params.tripId;
   const singleItemId = req.params.itemId;
+  console.log("req.body: ", req.body);  // check for this 1st, if same, then proceed and make sure the existing one gets updated.
 
-  const someObject = Object.assign({}, req.body)
+  const someObject = Object.assign({}, req.body);
+  console.log("someObject in PUT: ", someObject);
 
   Trip
-    .findOneAndUpdate({_id: singleTripId}, {$push: {items: someObject}}, {new: true})
-    .then(trip => res.json(trip))
+    .findOne({_id: singleTripId})
+    .then(trip => {
+      trip.items.find(item => {
+        if (singleItemId == item._id){
+          console.log("req.body.item in if: ", req.body.item);
+          console.log(`item.item: ${item.item}`);
+          item.item = req.body.item;
+          item.itemDetails = req.body.itemDetails;
+          console.log(`item after modify: ${item}`);
+        }
+      })
+      // console.log(`trip (should be updated): ${trip}`);
+      trip.save();
+      res.json(trip);
+    })
     .catch(
       err => {
         console.error(err);
-        res.status(500).json({message: 'Something\'s wrong with the trip post route.'});
+        res.status(500).json({message: 'Something\'s wrong with the item PUT route.'});
     });
 })
 
