@@ -107,13 +107,11 @@ router.post('/', jsonParser, jwtAuth, (req,res) => {
     // Designate the creator of trip as admin?  Only that user can delete a trip?  Extra step in the trip creation endpoint.
 
 router.delete('/:tripId', jsonParser, jwtAuth, (req, res) => {
-  console.log(`req.user.username: ${req.user.username}`);
-  console.log('req.params.tripId: ' + req.params.tripId);
+  // console.log(`req.user.username: ${req.user.username}`);
+  // console.log('req.params.tripId: ' + req.params.tripId);
 
   const singleTripId = req.params.tripId;
   const tripDeleteByUser = req.user.username;
-
-  // Trip.findOneAndRemove({tripId: singleTripId}).then(res.status(200).json({message: 'You have successfully deleted this trip!'});)
 
   Trip
     .findOne({_id: singleTripId})  //always returns an array of objects with just find()
@@ -126,7 +124,7 @@ router.delete('/:tripId', jsonParser, jwtAuth, (req, res) => {
       }
       else if (trip){
         let user = trip.users.find(user => user.username === tripDeleteByUser);
-        console.log(`user: ${user}`);
+        // console.log(`user: ${user}`);
 
           if (!user){
             res.status(403).json({message: 'You are not authorized to delete this trip!'});
@@ -137,7 +135,7 @@ router.delete('/:tripId', jsonParser, jwtAuth, (req, res) => {
       }
     })
     .then(trip => {
-      console.log(`trip at the bottom: ${trip}`)
+      // console.log(`trip at the bottom: ${trip}`)
       res.status(200).json({message: 'You have successfully deleted this trip!'});
     })
     .catch(
@@ -198,10 +196,6 @@ router.put('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
 
   const singleTripId = req.params.tripId;
   const singleItemId = req.params.itemId;
-  console.log("req.body: ", req.body);  // check for this 1st, if same, then proceed and make sure the existing one gets updated.
-
-  const someObject = Object.assign({}, req.body);
-  console.log("someObject in PUT: ", someObject);
 
   Trip
     .findOne({_id: singleTripId})
@@ -210,14 +204,15 @@ router.put('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
         if (singleItemId == item._id){
           console.log("req.body.item in if: ", req.body.item);
           console.log(`item.item: ${item.item}`);
-          item.item = req.body.item;
-          item.itemDetails = req.body.itemDetails;
-          console.log(`item after modify: ${item}`);
+          item.item = req.body.item;                 // || item.item
+          item.itemDetails = req.body.itemDetails;   // || item.itemDetails
+          item.userClaim = req.body.userClaim;       // || item.userClaim
+          console.log(`item after modify: ${item}`);   // Do I need an else?
         }
       })
       // console.log(`trip (should be updated): ${trip}`);
       trip.save();
-      res.json(trip);
+      res.json(trip);   // why don't we need a .then to render the updated trip?
     })
     .catch(
       err => {
@@ -226,6 +221,34 @@ router.put('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
     });
 })
 
+//  Delete an Existing item:
+
+router.delete('/:tripId/:itemId', jsonParser, jwtAuth, (req, res) => {
+  console.log(`req.user.username in item DELETE: ${req.user.username}`);
+  const singleTripId = req.params.tripId;
+  const singleItemId = req.params.itemId;
+
+  Trip
+    .findOne({_id: singleTripId})
+    .then(trip => {
+      trip.items.find(item => {
+        if (singleItemId == item._id){
+          return item.remove();
+        }
+      })
+      trip.save();
+    })
+    .then(trip => {
+      console.log(`trip at the bottom of item delete: ${trip}`)
+      res.status(200).json({message: 'You have successfully deleted this item!'});
+    })
+    .catch(
+      err => {
+        console.error(err);
+        res.status(500).json({message: 'Something\'s wrong with the item DELETE route.'});
+    });
+
+})
 
 
 
