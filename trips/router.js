@@ -102,8 +102,6 @@ router.post('/', jsonParser, jwtAuth, (req,res) => {
 
 
 //  Delete a single trip:
-    //Find Trip by ID, populate Trip object with the users, if req.user === one of the populated users, then remove by ID.  If not, res.status(403).json({message: 'You can\'t delete that trip!'});
-
     // Designate the creator of trip as admin?  Only that user can delete a trip?  Extra step in the trip creation endpoint.
 
 router.delete('/:tripId', jsonParser, jwtAuth, (req, res) => {
@@ -163,10 +161,6 @@ router.put('/:tripId', jsonParser, jwtAuth, (req,res) => {
     });
 })
 
-//Do we need these 2 gets?  or just get it from GET trip?
-      //  GET a list of items for a particular trip:
-      //  GET an Existing item:
-
 //  Creating an Existing item:
 
 router.post('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
@@ -204,9 +198,9 @@ router.put('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
         if (singleItemId == item._id){
           console.log("req.body.item in if: ", req.body.item);
           console.log(`item.item: ${item.item}`);
-          item.item = req.body.item;                 // || item.item
-          item.itemDetails = req.body.itemDetails;   // || item.itemDetails
-          item.userClaim = req.body.userClaim;       // || item.userClaim
+          item.item = req.body.item || item.item;
+          item.itemDetails = req.body.itemDetails || item.itemDetails;
+          item.userClaim = req.body.userClaim || item.userClaim;
           console.log(`item after modify: ${item}`);   // Do I need an else?
         }
       })
