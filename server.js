@@ -46,7 +46,7 @@ passport.use(jwtStrategy);
 
 app.use('/api/users/', usersRouter);  // signup
 app.use('/api/auth/', authRouter);    // login
-app.use('/trip/', tripsRouter);
+app.use('/api/trip/', tripsRouter);
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 

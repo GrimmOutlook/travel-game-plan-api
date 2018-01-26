@@ -161,12 +161,11 @@ router.put('/:tripId', jsonParser, jwtAuth, (req,res) => {
     });
 })
 
-//  Creating an Existing item:
+//  Creating a New item:
 
-router.post('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
+router.post('/:tripId', jsonParser, jwtAuth, (req,res) => {
 
   const singleTripId = req.params.tripId;
-  const singleItemId = req.params.itemId;
 
   const someObject = Object.assign({}, req.body)
   console.log("someObject in POST: ", someObject);
@@ -175,7 +174,7 @@ router.post('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
     .findOneAndUpdate({_id: singleTripId}, {$push: {items: someObject}}, {new: true})
     .then(trip => {
       console.log(`trip: ${trip}`);
-      res.json(trip)
+      res.json(trip);
     })
     .catch(
       err => {
