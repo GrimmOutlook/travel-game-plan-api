@@ -244,6 +244,36 @@ router.delete('/:tripId/:itemId', jsonParser, jwtAuth, (req, res) => {
 })
 
 
+//  GET the tripName & tripUUID only when sent a trip UUID from a user receiving an invitation:
+
+router.get('/trip-invite/:tripUUID', (req, res) => {
+  console.log('req.params.tripUUID: ' + req.params.tripUUID);
+
+  const inviteTripId = req.params.tripUUID;
+
+  Trip
+    .findOne({tripUUID: inviteTripId})
+    .exec()
+    .then(trip => {
+      console.log('trip: ', trip);
+       if (!trip){
+        res.status(403).json({message: 'That trip does not exist!'});
+      }
+      else if (trip){
+        res.json({tripName: trip.tripName, tripUUID: trip.tripUUID});
+      }
+      else {
+        res.status(403).json({message: 'You can\'t look at that trip!'});
+      }
+    })
+    .catch(
+      err => {
+        console.error(err);
+        res.status(500).json({message: 'Something\'s wrong with the individual trip page.'});
+    });
+
+});
+
 
 
 module.exports = {router};
