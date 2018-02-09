@@ -10,7 +10,7 @@ const UserSchema = Schema({
   password: String,    // required: true??
   firstName: {type: String, default: '', trim: true},
   lastName: {type: String, default: '', trim: true},
-  trip: [{
+  trips: [{
     type: Schema.Types.ObjectId, ref: 'Trip'
   }]
 });
@@ -19,8 +19,8 @@ UserSchema.methods.apiRepr = function() {
   return {
     username: this.username || '',
     firstName: this.firstName || '',
-    lastName: this.lastName || '',
-    trip: this.trip
+    lastName: this.lastName || ''  //,
+    // trips: this.trips
   };
 };
 

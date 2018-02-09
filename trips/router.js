@@ -173,7 +173,7 @@ router.post('/:tripId', jsonParser, jwtAuth, (req,res) => {
   Trip
     .findOneAndUpdate({_id: singleTripId}, {$push: {items: someObject}}, {new: true})
     .then(trip => {
-      console.log(`trip: ${trip}`);
+      console.log(`trip in create new item api endpoint: ${trip}`);
       res.json(trip);
     })
     .catch(

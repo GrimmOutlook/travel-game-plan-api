@@ -151,9 +151,9 @@ router.get('/me', jwtAuth, (req, res) => {
   console.log(`req.user.username: ${req.user.username}`);
   User
     .findOne({username: req.user.username})
-    .populate('trip')
+    .populate('trips')
     .exec()
-    .then(user => res.json(user.apiRepr()))
+    .then(user => res.json(user))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
