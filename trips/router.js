@@ -81,10 +81,11 @@ router.post('/', jsonParser, jwtAuth, (req,res) => {
   Trip
     .create({tripUUID: tripUUID, tripName: tripName, dateStart: dateStart, dateEnd: dateEnd, address: address, tripDetails: tripDetails})
     .then(trip => {
-      User
+      return User
         .findOne({username: req.user.username})
         .then(user => {
-          user.trip.push(trip);   // Mongoose handles what info is referenced
+          console.log('user on server: ', user);
+          user.trips.push(trip);   // Mongoose handles what info is referenced
           user.save()
           .then(user => {
             trip.users.push(user);  // Mongoose handles what info is referenced
@@ -166,12 +167,25 @@ router.put('/:tripId', jsonParser, jwtAuth, (req,res) => {
 router.post('/:tripId', jsonParser, jwtAuth, (req,res) => {
 
   const singleTripId = req.params.tripId;
+  const {item, itemDetails} = req.body;
+  const someObject = {item, itemDetails};
 
-  const someObject = Object.assign({}, req.body)
-  console.log("someObject in POST: ", someObject);
 
-  Trip
-    .findOneAndUpdate({_id: singleTripId}, {$push: {items: someObject}}, {new: true})
+ User
+    .findOne({username: req.user.username})
+    .then(user => {
+      if (req.body.claimOrNot){
+        someObject.userClaim = user._id
+        //someObject = {item: asdf;j, itemDetails: fasdf, userClaim: reactdude}
+      }
+      return Trip
+        .findOneAndUpdate({_id: singleTripId}, {$push: {items: someObject}}, {new: true})
+        .populate({
+          path: 'items.userClaim',
+          model: 'User'
+        })
+        .exec()
+    })
     .then(trip => {
       console.log(`trip in create new item api endpoint: ${trip}`);
       res.json(trip);
