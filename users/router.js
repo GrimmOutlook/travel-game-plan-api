@@ -7,6 +7,7 @@ const config = require('../config');
 
 const {jwtStrategy} = require('../auth');
 const {User} = require('./models');
+const {Trip} = require('../trips/models');
 
 const router = express.Router();
 
@@ -163,6 +164,33 @@ router.get('/me', jwtAuth, (req, res) => {
     .then(user => res.json(user))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
+
+// Add trip to user's trip array after receiving trip-invite:
+
+router.put('/me', jsonParser, jwtAuth, (req, res) => {
+  const tripInviteUUID = req.body.inviteUUID;
+  User
+    .findOne({username: req.user.username})
+    .populate('trips')
+    .then(user => {
+      return Trip
+        .findOne({tripUUID: tripInviteUUID})
+        .then(trip => {
+          user.trips.push(trip);
+          user.save()
+          .then(user => {
+            trip.users.push(user);  // Mongoose handles what info is referenced
+            trip.save()
+            .then(trip => res.json(trip))
+          })
+        })
+    })
+    .catch(
+      err => {
+        console.error(err);
+        res.status(500).json({message: 'Something\'s wrong.'});
+    });
+})
 
 //  GETs all users - not something we want:
 
