@@ -106,9 +106,6 @@ router.post('/', jsonParser, jwtAuth, (req,res) => {
     // Designate the creator of trip as admin?  Only that user can delete a trip?  Extra step in the trip creation endpoint.
 
 router.delete('/:tripId', jsonParser, jwtAuth, (req, res) => {
-  // console.log(`req.user.username: ${req.user.username}`);
-  // console.log('req.params.tripId: ' + req.params.tripId);
-
   const singleTripId = req.params.tripId;
   const tripDeleteByUser = req.user.username;
 
@@ -123,7 +120,6 @@ router.delete('/:tripId', jsonParser, jwtAuth, (req, res) => {
       }
       else if (trip){
         let user = trip.users.find(user => user.username === tripDeleteByUser);
-        // console.log(`user: ${user}`);
 
           if (!user){
             res.status(403).json({message: 'You are not authorized to delete this trip!'});
@@ -134,22 +130,19 @@ router.delete('/:tripId', jsonParser, jwtAuth, (req, res) => {
       }
     })
     .then(trip => {
-      // console.log(`trip at the bottom: ${trip}`)
       res.status(200).json({message: 'You have successfully deleted this trip!'});
     })
     .catch(
       err => {
         console.error(err);
-        res.status(500).json({message: 'Something\'s wrong with the trip post route.'});
+        res.status(500).json({message: 'Something\'s wrong with the trip delete route.'});
     });
 })
 
 //  Edit an Existing Trip:
 
 router.put('/:tripId', jsonParser, jwtAuth, (req,res) => {
-
   const singleTripId = req.params.tripId;
-
   const someObject = Object.assign({}, req.body)
 
   Trip
@@ -158,18 +151,16 @@ router.put('/:tripId', jsonParser, jwtAuth, (req,res) => {
     .catch(
       err => {
         console.error(err);
-        res.status(500).json({message: 'Something\'s wrong with the trip post route.'});
+        res.status(500).json({message: 'Something\'s wrong with the trip put route.'});
     });
 })
 
 //  Creating a New item:
 
 router.post('/:tripId', jsonParser, jwtAuth, (req,res) => {
-
   const singleTripId = req.params.tripId;
   const {item, itemDetails} = req.body;
   const newItemObject = {item, itemDetails};
-
 
  User
     .findOne({username: req.user.username})
@@ -200,10 +191,8 @@ router.post('/:tripId', jsonParser, jwtAuth, (req,res) => {
 //  Editing an Existing item:
 
 router.put('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
-
   const singleTripId = req.params.tripId;
   const singleItemId = req.params.itemId;
-  console.log('req.body in edit item: ', req.body);
 
   Trip
     .findOne({_id: singleTripId})
@@ -284,11 +273,9 @@ router.get('/trip-invite/:tripUUID', (req, res) => {
     .catch(
       err => {
         console.error(err);
-        res.status(500).json({message: 'Something\'s wrong with the individual trip page.'});
+        res.status(500).json({message: 'Something\'s wrong with the trip-invite/:tripUUID endpoint.'});
     });
 
 });
-
-
 
 module.exports = {router};

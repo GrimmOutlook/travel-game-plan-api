@@ -14,10 +14,6 @@ const router = express.Router();
 // const jsonParser = bodyParser.urlencoded({ extended: true });   // works in browser, not Postman
 const jsonParser = bodyParser.json();      // works in Postman, not browser
 
-// router.get('/', (req, res) => {
-//   res.render('signup');
-// });
-
 // Post to register a new user
 router.post('/', jsonParser, (req, res) => {
   console.log('req.body', req.body);
@@ -145,11 +141,6 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 //  Use this for endpoint for retrieving all trips for a given user:
 
 router.get('/me', jwtAuth, (req, res) => {
-  // find how the username gets here
-  console.log("endpoint /me");
-  console.log('req.body: ', req.body);
-  console.log('req.user: ', req.user);
-  console.log(`req.user.username: ${req.user.username}`);
   User
     .findOne({username: req.user.username})
     .populate({
@@ -169,6 +160,7 @@ router.get('/me', jwtAuth, (req, res) => {
 
 router.put('/me', jsonParser, jwtAuth, (req, res) => {
   const tripInviteUUID = req.body.inviteUUID;
+
   User
     .findOne({username: req.user.username})
     .populate('trips')
@@ -188,22 +180,8 @@ router.put('/me', jsonParser, jwtAuth, (req, res) => {
     .catch(
       err => {
         console.error(err);
-        res.status(500).json({message: 'Something\'s wrong.'});
+        res.status(500).json({message: 'Something\'s wrong with the add a trip feature.'});
     });
 })
-
-//  GETs all users - not something we want:
-
-router.get('/', (req, res) => {
-  console.log("Why doesnt req.body work?");
-  console.log('req.body: ', req.body);
-  console.log(`req.user: ${req.user}`);
-  // console.log(`req.user.username: ${req.user.username}`);
-  return User.find()
-    .then(users => res.json(users.map(user => user)))
-    .catch(err => res.status(500).json({message: 'Internal server error'}));
-});
-
-
 
 module.exports = {router};
