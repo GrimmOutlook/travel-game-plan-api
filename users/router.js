@@ -138,14 +138,25 @@ passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 
-//  Use this for endpoint for retrieving all trips for a given user:
+//  Use this for endpoint for retrieving all trips for a given user (dashboard):
 
 router.get('/me', jwtAuth, (req, res) => {
+  console.log('Date.now(): ', Date.now());
   User
     .findOne({username: req.user.username})
     .populate({
       path: 'trips',
       model: 'Trip',
+      match: {
+        dateEnd: {
+          '$gte': Date.now()          //1518971708780
+        }
+      },
+      options: {
+        sort: {
+          dateStart: 1
+        }
+      },
       populate: {
         path: 'items.userClaim',
         model: 'User'
