@@ -193,14 +193,19 @@ router.post('/:tripId', jsonParser, jwtAuth, (req,res) => {
 router.put('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
   const singleTripId = req.params.tripId;
   const singleItemId = req.params.itemId;
+  console.log('req.body.username: ', req.body.username);
 
   Trip
     .findOne({_id: singleTripId})
+    .populate({
+        path: 'items.userClaim',
+        model: 'User'
+      })
     .then(trip => {
       trip.items.find(item => {
         if (singleItemId == item._id){
           console.log("req.body.item in if: ", req.body.item);
-          console.log(`item.item: ${item.item}`);
+          console.log(`item.userClaim.username: ${item.userClaim.username}`);
           item.item = req.body.item || item.item;
           item.itemDetails = req.body.itemDetails || item.itemDetails;
           item.userClaim = req.body.userClaim || item.userClaim;
