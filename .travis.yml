@@ -1,13 +1,14 @@
 language: node_js
 node_js: node
-# sudo: false
 before_script:
-  - sleep 15
-  - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
+- sleep 15
+- mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
 env:
-   - CI=true
+  matrix:
+  - CI=true
+  - secure: OfsZWvVxB+MdeIrprZmKz9QrwFpfbdg+HSYh3xmYi4MqycY/6hO+Rm8bRwBlTXtmmmKzHWVaye4aiOxzXKrINNZP5/niVF7gt5eSbfwnR+q+mCHO9HaUTqmnW5uHRqk60HeRu83ti0a3RMhmiT0jERPP3eUEuXHJ6xun/iajjUR07GagoAfEXeIeDISjuE5+Cc3DrB87sB9GMzMZppyQ7X/y3kMHct+qNJWVErYciYnIEh5gZY5uIBrwv3sxV0bJBtJ47ohdHO1w2mCgtoC9u3UQzCgPRZHkYO2TgammUFNnPtvRYXiuroaBzY1sDM+80SP8ox3d0XAW0u9mcjyrI/OsqsLBa3K8YTOZpSzOFmXR6DGfdQ2JI6uQXgBUswe1r7DX0LemZn7cuZiosefE3uXkLLsU4PO8niSj2V0sk0JoWcl7kEKzeEII3QntTaE1d3ZIKbS50yvuZ6snQCJfAoK6lRAZyE/5NZeH1dkPk35wecdMmFOO9hqxRXwIQqcXJRJEPYKIlwp3bVRN8hBzjhmySoTmbBQSLljUl0+lDIJPMO0/l1lt0WbTnnOhncQ9hltQi3r1aVkJXkQK4AQ1pB46vWApuvZH9RAl7e3d8LGtGcdGp+HBFuGfkPJmSrjYG1bHLDjc0C488RwtuCWO5W/RZyzh0al+aC4nEHfWsS4=
 services:
-  - mongodb
+- mongodb
 deploy:
   provider: heroku
   api_key:
