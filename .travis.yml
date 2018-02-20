@@ -1,0 +1,17 @@
+language: node_js
+node_js: node
+# sudo: false
+before_script:
+  - sleep 15
+  - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
+env:
+   - CI=true
+services:
+  - mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: xOTRCoXgHpw2HR6NjoUi+gT3m7HJR/7sJlB3KHDDvzTYLQY3Q3Dds1cE972CJ1enD9yJVCid5x5PCFOCxkgCIEN4v07E99SVaJcPAdE+79r/2Dik4YhaT12OOWo1z81atrkmXHOMWIbbSP5B/zJibFjg+Ji0n4LB2AfsyR55Ly0cLkKInO/8MO9V+V9HKHGb5wnqRrCS3wfJS0WFoSKrQixsQVfmzD/P455x05YXQSOFSsOLXqZdANhEcPCw5pvz7g6uztzmDt2X12GakoJd5FKz5kAoFSSslN2Q3gKvvbLJ9CDsxT/xP8f9rQg9yESdpOajnd2Mg1garw5v7UgL0gSgvIPZDfkDFD9Kw4OZFlIdjlVpimw6a5qXHwXzBCMVIDebmfrm8LN4bQHhENpa9JNDyYJcGpMT4LQqSqGmlpQQzQN/EOVu/3ob4UkgQ2CBd9kRDWRim8U+haIpubzFmfrNT8E/kN7HVl1nbB+QGnQp6RHgSV3x1YPvQZTmRBI7prtcX9b5vGz6LKNubKeYuU3QV5XEDUkI/Ues3euwZz3S8nt5rgUbqPXtmCJC9CzGnKoishcDU8nOUtH6J3CnD5F7iH0CmrlbFWKMGmOn9qEV55GTmZr997g1mmlCoNXql6uh9BriXz1ooaDlqndWGdHOLU+vZJqP8vaQZbOjVOE=
+  app: travel-game-plan
+  on:
+    repo: GrimmOutlook/travel-game-plan-api
