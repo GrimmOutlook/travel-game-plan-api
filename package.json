@@ -2,9 +2,9 @@
   "name": "travel-game-plan-api",
   "version": "1.0.0",
   "description": "API for travelgameplan.com",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "mocha"
+    "test": "NODE_ENV=test mocha ./test"
   },
   "repository": {
     "type": "git",
