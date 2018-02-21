@@ -1,2 +1,11 @@
 language: node_js
 node_js: node
+services:
+- mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: lUFk5FCuaqzg5WUemWDJ7macAJWC+7SKKTmQhLP0e9kzcJY6E08Su31Aw6zqXgF/XkJ2h3moGHXtXjdYXhFVyDL3XtBiGFvWAXVEMO9URNHAYUdwV06cOnS4MqY9w1WRNT4OwAS60NlI7JmtwK48IO2Y+mzfb26K4MQPy0ek39TnFkEb6MoRk5WkOM65HVabmV4+EKgNfRFadQwnXe7C1iZ0/uEddqAx8kSaLvQOqKibBmrOVchvLEyDvJ1g4HPP+j8zqXOpHs8biI6SUvJdXp6yRrTO0RH/d9spQgzx4Efg5IGXS1y1Z0fCFFwDr/YDD21T8zd5VJuK8Ld6+Wvhwx7Jd29SzqUWm0h9oNxZckMAl2Jxf3Ot8mgXUHTLCzS26FC3Ay/kUmdYICbiN53TFnoczJKjZvAPoEWNByYjrlfYjb2ocE12l+lBsJBF43Bcu641SPoefYQpaAVqiict1qVPk7qXUqpInsDAVmhVG+P411w2mZW4K0ALf4s71meIEeeJM+EYA3zoKiFxIN6JYhYTrwgoLYmOZWbx6rRbQMyERfOUXvEAa+rET6+rwfVu0Jz47ZCi4sFwgTSx6I2L3DtBA7rz8OFtrU4rOW4bxdh4li8Wg9hcae2VazsQkSzKhn7Hz86oZ19RR7IgY66KI55ZyOZQarsvGvoRUFkTsws=
+  app: pacific-shore-78581
+  on:
+    repo: GrimmOutlook/travel-game-plan-api
