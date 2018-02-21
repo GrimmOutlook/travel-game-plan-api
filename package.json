@@ -6,6 +6,9 @@
   "scripts": {
     "test": "NODE_ENV=test mocha ./test"
   },
+  "engines": {
+    "node": "9.2.0"
+  },
   "repository": {
     "type": "git",
     "url": "travel-game-plan-api"
