@@ -160,10 +160,16 @@ router.get('/me', jwtAuth, (req, res) => {
       populate: {
         path: 'items.userClaim',
         model: 'User'
+      },
+      populate: {
+        path: 'users',
+        model: 'User'
       }
     })
     .exec()
-    .then(user => res.json(user))
+    .then(user => {
+      console.log('user in all trips for a user /me endpoint: ', user.trips[1].users);
+      res.json(user)})
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
