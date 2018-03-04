@@ -161,6 +161,7 @@ router.post('/:tripId', jsonParser, jwtAuth, (req,res) => {
   const singleTripId = req.params.tripId;
   const {item, itemDetails} = req.body;
   const newItemObject = {item, itemDetails};
+  console.log('create new item req.user.username: ', req.user.username);
 
  User
     .findOne({username: req.user.username})
@@ -171,10 +172,16 @@ router.post('/:tripId', jsonParser, jwtAuth, (req,res) => {
       }
       return Trip
         .findOneAndUpdate({_id: singleTripId}, {$push: {items: newItemObject}}, {new: true})
-        .populate({
-          path: 'items.userClaim',
-          model: 'User'
-        })
+        .populate([
+          {
+            path: 'items.userClaim',
+            model: 'User'
+          },
+          {
+            path: 'users',
+            model: 'User'
+          }
+        ])
         .exec()
     })
     .then(trip => {
@@ -193,19 +200,25 @@ router.post('/:tripId', jsonParser, jwtAuth, (req,res) => {
 router.put('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
   const singleTripId = req.params.tripId;
   const singleItemId = req.params.itemId;
-  console.log('req.body.username: ', req.body.username);
+  console.log('username in edit item: ', req.user.username);
+  console.log('req.body.claimOrNot in edit item: ', req.body.claimOrNot);
 
   Trip
     .findOne({_id: singleTripId})
-    .populate({
+    .populate([
+      {
         path: 'items.userClaim',
         model: 'User'
-      })
+      },
+      {
+        path: 'users',
+        model: 'User'
+      }
+    ])
     .then(trip => {
+      console.log('trip in edit item: ', trip);
       trip.items.find(item => {
         if (singleItemId == item._id){
-          console.log("req.body.item in if: ", req.body.item);
-          console.log(`item.userClaim.username: ${item.userClaim.username}`);
           item.item = req.body.item || item.item;
           item.itemDetails = req.body.itemDetails || item.itemDetails;
           item.userClaim = req.body.userClaim || item.userClaim;

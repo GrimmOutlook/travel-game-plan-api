@@ -144,32 +144,34 @@ router.get('/me', jwtAuth, (req, res) => {
   console.log('Date.now(): ', Date.now());
   User
     .findOne({username: req.user.username})
-    .populate({
-      path: 'trips',
-      model: 'Trip',
-      match: {
-        dateEnd: {
-          '$gte': Date.now()          //1518971708780
-        }
-      },
-      options: {
-        sort: {
-          dateStart: 1
-        }
-      },
-      populate: {
-        path: 'items.userClaim',
-        model: 'User'
-      },
-      populate: {
-        path: 'users',
-        model: 'User'
+    .populate(
+      {
+        path: 'trips',
+        model: 'Trip',
+        match: {
+          dateEnd: {
+            '$gte': Date.now()          //1518971708780
+          }
+        },
+        options: {
+          sort: {
+            dateStart: 1
+          }
+        },
+        populate: [
+          {
+            path: 'items.userClaim',
+            model: 'User'
+          },
+          {
+            path: 'users',
+            model: 'User'
+          }
+        ]
       }
-    })
+    )
     .exec()
-    .then(user => {
-      console.log('user in all trips for a user /me endpoint: ', user.trips[1].users);
-      res.json(user)})
+    .then(user => res.json(user))
     .catch(err => res.status(500).json({message: 'Internal server error'}));
 });
 
