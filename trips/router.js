@@ -167,8 +167,7 @@ router.post('/:tripId', jsonParser, jwtAuth, (req,res) => {
     .findOne({username: req.user.username})
     .then(user => {
       if (req.body.claimOrNot){
-        newItemObject.userClaim = user._id
-        //newItemObject = {item: asdf;j, itemDetails: fasdf, userClaim: the _id for reactdude}
+        newItemObject.userClaim = user._id;
       }
       return Trip
         .findOneAndUpdate({_id: singleTripId}, {$push: {items: newItemObject}}, {new: true})
@@ -200,32 +199,40 @@ router.post('/:tripId', jsonParser, jwtAuth, (req,res) => {
 router.put('/:tripId/:itemId', jsonParser, jwtAuth, (req,res) => {
   const singleTripId = req.params.tripId;
   const singleItemId = req.params.itemId;
-  console.log('username in edit item: ', req.user.username);
-  console.log('req.body.claimOrNot in edit item: ', req.body.claimOrNot);
+  let userClaimUpdate = {};
 
-  Trip
-    .findOne({_id: singleTripId})
-    .populate([
-      {
-        path: 'items.userClaim',
-        model: 'User'
-      },
-      {
-        path: 'users',
-        model: 'User'
+  User
+    .findOne({username: req.user.username})
+    .then(user => {
+      if (req.body.claimOrNot){
+        userClaimUpdate = {_id: user._id, username: req.user.username};
       }
-    ])
+      return Trip
+        .findOne({_id: singleTripId})
+        .populate([
+          {
+            path: 'items.userClaim',
+            model: 'User'
+          },
+          {
+            path: 'users',
+            model: 'User'
+          }
+        ])
+        .exec()
+    })
     .then(trip => {
-      console.log('trip in edit item: ', trip);
       trip.items.find(item => {
         if (singleItemId == item._id){
+          // console.log(`item before modify: ${item}`);
+          console.log(`item.userClaim before modify: ${item.userClaim}`);
           item.item = req.body.item || item.item;
           item.itemDetails = req.body.itemDetails || item.itemDetails;
-          item.userClaim = req.body.userClaim || item.userClaim;
+          item.userClaim = userClaimUpdate || item.userClaim;
+          console.log(`item.userClaim AFTER modify: ${item.userClaim}`);
           console.log(`item after modify: ${item}`);   // Do I need an else?
         }
       })
-      // console.log(`trip (should be updated): ${trip}`);
       trip.save();
       res.json(trip);   // why don't we need a .then to render the updated trip?
     })
