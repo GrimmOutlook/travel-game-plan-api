@@ -186,7 +186,10 @@ router.put('/me', jsonParser, jwtAuth, (req, res) => {
     .then(user => {
       return Trip
         .findOne({tripUUID: tripInviteUUID})
+        .populate('users')
+        .exec()
         .then(trip => {
+          console.log('PUT /me trip after findOne: ', trip);
           user.trips.push(trip);
           user.save()
           .then(user => {
