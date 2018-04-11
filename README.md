@@ -16,12 +16,23 @@ Going on vacation?  A business trip?  Organizing a trip with friends?  Keep trac
 - **/api/trip/** - List of all trips in database. - GET
 - **/api/trip/** - Create a new trip & UUID for a user.  Add the trip to their list of trips & add the user to the list of users for the trip - POST
 
-- **/api/trip/:tripId - Retrieve one particular trip along with its list of items & list of users from a user's list of trips. - GET
-- **/api/trip/:tripId - Create a new item for a particular trip. - POST
-- **/api/trip/:tripId - Edit existing trip information. - PUT
-- **/api/trip/:tripId - Remove a particular trip from the database. - DELETE
+- **/api/trip/:tripId** - Retrieve one particular trip along with its list of items & list of users from a user's list of trips. - GET
+- **/api/trip/:tripId** - Create a new item for a particular trip. - POST
+- **/api/trip/:tripId** - Edit existing trip information. - PUT
+- **/api/trip/:tripId** - Remove a particular trip from the database. - DELETE
 
-- **/api/trip/:tripId/:itemId - Edit an existing item. - PUT
-- **/api/trip/:tripId/:itemId - Remove a particular item from the list of items of a particular trip. - DELETE
+- **/api/trip/:tripId/:itemId** - Edit an existing item. - PUT
+- **/api/trip/:tripId/:itemId** - Remove a particular item from the list of items of a particular trip. - DELETE
 
-- **/api/trip/:trip-invite/:tripUUID - Returns the tripName & tripUUID only when sent a trip UUID from a user receiving an invitation. - GET
+- **/api/trip/:trip-invite/:tripUUID** - Returns the tripName & tripUUID only when sent a trip UUID from a user receiving an invitation. - GET
+
+# Tech Stack
+
+- Node.js
+- Express
+- MongoDB
+- Passport
+- JWT
+- Mocha & Chai
+- TravisCI
+- Heroku
