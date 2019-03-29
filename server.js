@@ -6,6 +6,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const passport = require('passport');
+const cors = require('cors');
 
 // const jsonParser = bodyParser.json();
 
@@ -19,15 +20,16 @@ const {PORT, DATABASE_URL} = require('./config');
 
 const app = express();
 
+app.use(cors());
 // Logging
 app.use(morgan('common'));
 // app.use(jsonParser); // get information from html forms  // works in Postman, not browser
 // app.use(bodyParser.urlencoded({ extended: true }));  // works in browser, not Postman
 
 // Pug views
-app.use('/public', express.static(path.join(__dirname, 'public')));
-app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, '/views'));
+// app.use('/public', express.static(path.join(__dirname, 'public')));
+// app.set('view engine', 'pug');
+// app.set('views', path.join(__dirname, '/views'));
 
 // CORS
 app.use(function (req, res, next) {
