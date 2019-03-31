@@ -72,6 +72,7 @@ router.get('/:tripId', jwtAuth, (req, res) => {
 //  Create a new trip and a UUID for a particular user:
 
 router.post('/', jsonParser, jwtAuth, (req,res) => {
+  console.log('Here on the POST create new trip - req.body.tripName', req.body.tripName);
   const tripName = req.body.tripName;
   const dateStart = req.body.dateStart;
   const dateEnd = req.body.dateEnd;
@@ -81,6 +82,7 @@ router.post('/', jsonParser, jwtAuth, (req,res) => {
   Trip
     .create({tripUUID: tripUUID, tripName: tripName, dateStart: dateStart, dateEnd: dateEnd, address: address, tripDetails: tripDetails})
     .then(trip => {
+      console.log('trip created, pushed into users trip array: ', trip);
       return User
         .findOne({username: req.user.username})
         .then(user => {
