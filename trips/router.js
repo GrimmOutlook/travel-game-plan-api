@@ -88,10 +88,10 @@ router.post('/', jsonParser, jwtAuth, (req,res) => {
         .findOne({username: req.user.username})
         .then(user => {
           console.log('--------user on server----------------: ', user);
-          user.trips.push(trip);   // Mongoose handles what info is referenced
+          user.trips.concat([trip]);   // Mongoose handles what info is referenced
           user.save()
           .then(user => {
-            trip.users.push(user);  // Mongoose handles what info is referenced
+            trip.users.concat([user]);  // Mongoose handles what info is referenced
             trip.save()
             .then(trip => res.json(trip))
           })

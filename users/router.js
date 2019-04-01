@@ -190,10 +190,10 @@ router.put('/me', jsonParser, jwtAuth, (req, res) => {
         .exec()
         .then(trip => {
           console.log('PUT /me trip after findOne: ', trip);
-          user.trips.push(trip);
+          user.trips.concat([trip]);
           user.save()
           .then(user => {
-            trip.users.push(user);  // Mongoose handles what info is referenced
+            trip.users.concat([user]);  // Mongoose handles what info is referenced
             trip.save()
             .then(trip => res.json(trip))
           })
